@@ -14,30 +14,27 @@ export type Scalars = {
   Boolean: { input: boolean; output: boolean; }
   Int: { input: number; output: number; }
   Float: { input: number; output: number; }
+  Date: { input: any; output: any; }
   /** A datetime string with format `Y-m-d H:i:s`, e.g. `2018-05-23 13:43:32`. */
   DateTime: { input: any; output: any; }
   Upload: { input: any; output: any; }
 };
 
-export type Animal = Character & {
-  __typename?: 'Animal';
-  age?: Maybe<Scalars['Int']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
-};
-
-export type Character = {
-  name?: Maybe<Scalars['String']['output']>;
+export type AuthToken = {
+  __typename?: 'AuthToken';
+  name: Scalars['String']['output'];
+  role: Scalars['String']['output'];
+  token: Scalars['String']['output'];
 };
 
 export type CreateDaySlotHasMany = {
   create: Array<DaySlotInput>;
 };
 
-/** Account of a person who utilizes this application. */
 export type DaySlot = {
   __typename?: 'DaySlot';
   absentReason?: Maybe<Scalars['String']['output']>;
-  date?: Maybe<Scalars['DateTime']['output']>;
+  date: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   replacement?: Maybe<Doctor>;
   status: StatusEnum;
@@ -45,18 +42,39 @@ export type DaySlot = {
 };
 
 
-/** Account of a person who utilizes this application. */
 export type DaySlotDateArgs = {
   format?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DaySlotInput = {
-  date?: InputMaybe<Scalars['DateTime']['input']>;
+  absentReason?: InputMaybe<Scalars['String']['input']>;
+  date: Scalars['Date']['input'];
+  id?: InputMaybe<Scalars['ID']['input']>;
+  replacement?: InputMaybe<UpdateReplacementHasMany>;
   status: StatusEnum;
+  workHours?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Account of a person who utilizes this application. */
+export type DaySlotTemplate = {
+  __typename?: 'DaySlotTemplate';
+  dayNumber: Scalars['Int']['output'];
+  id: Scalars['ID']['output'];
+  status: StatusEnum;
+  workHours?: Maybe<Scalars['String']['output']>;
+};
+
+export type DaySlotTemplateInput = {
+  dayNumber?: InputMaybe<Scalars['Int']['input']>;
+  id?: InputMaybe<Scalars['ID']['input']>;
+  status?: InputMaybe<StatusEnum>;
+  workHours?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type Doctor = {
   __typename?: 'Doctor';
+  currentMonthDaySlots: Array<DaySlot>;
+  daySlotTemplates: Array<DaySlotTemplate>;
   daySlots: Array<DaySlot>;
   description: Scalars['String']['output'];
   id: Scalars['ID']['output'];
@@ -65,14 +83,21 @@ export type Doctor = {
 };
 
 
+export type DoctorDaySlotsArgs = {
+  month: Scalars['Int']['input'];
+  year: Scalars['Int']['input'];
+};
+
+
 export type DoctorDescriptionArgs = {
   len?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type DoctorInput = {
+  daySlotTemplates?: InputMaybe<Array<DaySlotTemplateInput>>;
   daySlots?: InputMaybe<CreateDaySlotHasMany>;
   description?: InputMaybe<Scalars['String']['input']>;
-  name: Scalars['String']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
   photo?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -85,15 +110,48 @@ export type DoctorPaginator = {
   paginatorInfo: PaginatorInfo;
 };
 
+export type DoctorUpdateInput = {
+  daySlotTemplates?: InputMaybe<Array<DaySlotTemplateInput>>;
+  daySlots?: InputMaybe<CreateDaySlotHasMany>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  name?: InputMaybe<Scalars['String']['input']>;
+  photo?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type Film = {
+  __typename?: 'Film';
+  id?: Maybe<Scalars['Int']['output']>;
+  name?: Maybe<Scalars['String']['output']>;
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createDoctor: Doctor;
+  deleteDoctor?: Maybe<Doctor>;
+  updateDaySlots: Array<DaySlot>;
+  updateDoctor: Doctor;
   upload?: Maybe<Scalars['String']['output']>;
 };
 
 
 export type MutationCreateDoctorArgs = {
   input?: InputMaybe<DoctorInput>;
+};
+
+
+export type MutationDeleteDoctorArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationUpdateDaySlotsArgs = {
+  input?: InputMaybe<UpdateDaySlotsInput>;
+};
+
+
+export type MutationUpdateDoctorArgs = {
+  input?: InputMaybe<DoctorUpdateInput>;
 };
 
 
@@ -150,22 +208,14 @@ export type PaginatorInfo = {
   total: Scalars['Int']['output'];
 };
 
-export type People = Character & {
-  __typename?: 'People';
-  name?: Maybe<Scalars['String']['output']>;
-  sex?: Maybe<Scalars['Int']['output']>;
-};
-
 /** Indicates what fields are available at the top level of a query operation. */
 export type Query = {
   __typename?: 'Query';
-  character?: Maybe<People>;
-  characters: Array<SearchResult>;
   daySlots: Array<DaySlot>;
-  doctor?: Maybe<Doctor>;
+  doctor: Doctor;
   doctors: Array<Doctor>;
+  login: AuthToken;
   paginationDoctors: DoctorPaginator;
-  sayHello?: Maybe<Scalars['String']['output']>;
 };
 
 
@@ -183,18 +233,17 @@ export type QueryDoctorsArgs = {
 
 
 /** Indicates what fields are available at the top level of a query operation. */
-export type QueryPaginationDoctorsArgs = {
-  first: Scalars['Int']['input'];
-  page?: InputMaybe<Scalars['Int']['input']>;
+export type QueryLoginArgs = {
+  email: Scalars['String']['input'];
+  password: Scalars['String']['input'];
 };
 
 
 /** Indicates what fields are available at the top level of a query operation. */
-export type QuerySayHelloArgs = {
-  name?: InputMaybe<Scalars['String']['input']>;
+export type QueryPaginationDoctorsArgs = {
+  first: Scalars['Int']['input'];
+  page?: InputMaybe<Scalars['Int']['input']>;
 };
-
-export type SearchResult = Animal | People;
 
 /** Directions for ordering a list of records. */
 export enum SortOrder {
@@ -219,6 +268,17 @@ export enum Trashed {
   Without = 'WITHOUT'
 }
 
+export type UpdateDaySlotsInput = {
+  daySlots?: InputMaybe<Array<DaySlotInput>>;
+  doctorId: Scalars['ID']['input'];
+  month: Scalars['Int']['input'];
+  year: Scalars['Int']['input'];
+};
+
+export type UpdateReplacementHasMany = {
+  connect?: InputMaybe<Scalars['ID']['input']>;
+};
+
 export type DoctorListItem_DoctorFragmentFragment = { __typename?: 'Doctor', id: string, name: string } & { ' $fragmentName'?: 'DoctorListItem_DoctorFragmentFragment' };
 
 export type SearchDoctorsQueryVariables = Exact<{
@@ -237,7 +297,7 @@ export type DoctorItemQueryVariables = Exact<{
 }>;
 
 
-export type DoctorItemQuery = { __typename?: 'Query', doctor?: { __typename?: 'Doctor', id: string, name: string, description: string, photo: string, daySlots: Array<{ __typename?: 'DaySlot', id: string, date?: any | null, status: StatusEnum, workHours?: string | null, absentReason?: string | null, replacement?: { __typename?: 'Doctor', id: string, name: string } | null }> } | null };
+export type DoctorItemQuery = { __typename?: 'Query', doctor: { __typename?: 'Doctor', id: string, name: string, description: string, photo: string, currentMonthDaySlots: Array<{ __typename?: 'DaySlot', id: string, date: string, status: StatusEnum, workHours?: string | null, absentReason?: string | null, replacement?: { __typename?: 'Doctor', id: string, name: string } | null }> } };
 
 export class TypedDocumentString<TResult, TVariables>
   extends String
@@ -276,7 +336,7 @@ export const DoctorItemDocument = new TypedDocumentString(`
     name
     description
     photo
-    daySlots {
+    currentMonthDaySlots {
       id
       date(format: "d-m")
       status

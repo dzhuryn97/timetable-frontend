@@ -22,7 +22,7 @@ export default function Doctor() {
                 description,
                 photo,
 
-                daySlots {
+                currentMonthDaySlots {
                     id,
                     date(format: "d-m"),
                     status,
@@ -46,7 +46,7 @@ export default function Doctor() {
     }
     const doctor = data.data.doctor;
 
-    const daySlots = doctor.daySlots?.map(function (daySlot) {
+    const daySlots = doctor.currentMonthDaySlots?.map(function (daySlot) {
         return (
             <Tr key={doctor.id}>
                 <Td>{ daySlot.date}</Td>
