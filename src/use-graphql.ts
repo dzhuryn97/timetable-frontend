@@ -1,29 +1,31 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import { ExecutionResult } from 'graphql';
-import { useQuery } from '@tanstack/react-query';
-import { TypedDocumentString } from './gql/graphql';
+import { useQuery } from "@tanstack/react-query";
+import { ExecutionResult } from "graphql";
+import { TypedDocumentString } from "./gql/graphql";
 
 export function useGraphQL<TResult, TVariables>(
-    document: TypedDocumentString<TResult, TVariables>,
-    ...[variables]: TVariables extends Record<string, never> ? [] : [TVariables]
+  document: TypedDocumentString<TResult, TVariables>,
+  ...[variables]: TVariables extends Record<string, never> ? [] : [TVariables]
 ) {
-    return useQuery(
-        [
-            // This logic can be customized as desired
-            document,
-            variables,
-        ] as const,
-        async ({ queryKey }) => {
-            return fetch('http://0.0.0.0/graphql', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    query: queryKey[0].toString(),
-                    variables: queryKey[1],
-                }),
-            }).then(response => response.json()) as Promise<ExecutionResult<TResult>>;
-        }
-    );
+  return useQuery(
+    [
+      // This logic can be customized as desired
+      document,
+      variables,
+    ] as const,
+    async ({ queryKey }) => {
+      return fetch(process.env.REACT_APP_API_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          query: queryKey[0].toString(),
+          variables: queryKey[1],
+        }),
+      }).then((response) => response.json()) as Promise<
+        ExecutionResult<TResult>
+      >;
+    },
+  );
 }
