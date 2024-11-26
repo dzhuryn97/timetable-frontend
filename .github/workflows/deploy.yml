@@ -1,0 +1,17 @@
+name: Deploy to dev env
+on:
+  push:
+env:
+  PROJECT_FOLDER: /var/www/timetable/frontend
+jobs:
+  test:
+    name: Code lint
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check code style
+        uses: creyD/prettier_action@v4.3
+        with:
+            dry: true
+            prettier_options: --check src
+            prettier_plugins: |
+                prettier-plugin-organize-imports
