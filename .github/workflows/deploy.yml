@@ -15,4 +15,4 @@ jobs:
         with:
           dry: true
           prettier_options: --check src
-          prettier_plugins: "prettier-plugin-organize-imports"
+          prettier_plugins: "@prettier-plugin-organize-imports"
