@@ -15,8 +15,6 @@ import { graphql } from "../gql";
 import { StatusEnum } from "../gql/graphql";
 import { useGraphQL } from "../use-graphql";
 
-export async function loader() {}
-
 export default function Doctor() {
   const params = useParams();
 
@@ -87,9 +85,9 @@ export default function Doctor() {
         <Table variant="simple">
           <Thead>
             <Tr>
-              <Th>Дата</Th>
-              <Th>Робочі години/Статус</Th>
-              <Th>Заміна</Th>
+              <Th>Date</Th>
+              <Th>Work hours/status</Th>
+              <Th>Replacement</Th>
             </Tr>
           </Thead>
           <Tbody>{daySlots}</Tbody>

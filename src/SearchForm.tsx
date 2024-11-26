@@ -11,7 +11,7 @@ export function SearchForm({ value, onChange }: SearchFormProps) {
         type="text"
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="П.І.Б."
+        placeholder="Full name"
       />
     </Flex>
   );

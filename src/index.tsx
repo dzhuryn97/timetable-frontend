@@ -13,7 +13,6 @@ const root = ReactDOM.createRoot(
 );
 const queryClient = new QueryClient();
 
-
 const router = createBrowserRouter([
   {
     path: "/",

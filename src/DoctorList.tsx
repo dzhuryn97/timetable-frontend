@@ -15,13 +15,10 @@ type DoctorListProps = {
   search: string;
 };
 export function DoctorList(props: DoctorListProps) {
-  const { data, error, isLoading } = useGraphQL(DoctorList_QueryFragment, {
+  const { data, isLoading } = useGraphQL(DoctorList_QueryFragment, {
     name: props.search,
   });
 
-  if (data && data.data) {
-    const res = data.data;
-  }
   if (isLoading) {
     return <div>Loading...</div>;
   }

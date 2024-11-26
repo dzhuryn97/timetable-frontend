@@ -7,6 +7,7 @@ export function useGraphQL<TResult, TVariables>(
   document: TypedDocumentString<TResult, TVariables>,
   ...[variables]: TVariables extends Record<string, never> ? [] : [TVariables]
 ) {
+  let apiUrl: string = process.env.REACT_APP_API_URL ?? "";
   return useQuery(
     [
       // This logic can be customized as desired
@@ -14,7 +15,7 @@ export function useGraphQL<TResult, TVariables>(
       variables,
     ] as const,
     async ({ queryKey }) => {
-      return fetch(process.env.REACT_APP_API_URL, {
+      return fetch(apiUrl, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

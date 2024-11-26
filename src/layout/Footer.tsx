@@ -8,7 +8,7 @@ export default function Footer() {
         height: "30px",
       }}
     >
-      <Text>© 2022 Chakra Templates. All rights reserved</Text>
+      <Text>©2024 Doctor timetable</Text>
     </footer>
   );
 }
