@@ -8,10 +8,12 @@ jobs:
     name: Code lint
     runs-on: ubuntu-24.04
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Check code style
         uses: creyD/prettier_action@v4.3
         with:
-            dry: true
-            prettier_options: --check src
-            prettier_plugins: |
-                prettier-plugin-organize-imports
+          dry: true
+          prettier_options: --check src
+          prettier_plugins: |
+            prettier-plugin-organize-imports
