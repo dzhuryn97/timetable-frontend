@@ -2,7 +2,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { ExecutionResult } from "graphql";
 import { TypedDocumentString } from "./gql/graphql";
-
 export function useGraphQL<TResult, TVariables>(
   document: TypedDocumentString<TResult, TVariables>,
   ...[variables]: TVariables extends Record<string, never> ? [] : [TVariables]
