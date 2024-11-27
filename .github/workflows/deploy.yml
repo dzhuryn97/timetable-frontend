@@ -15,3 +15,37 @@ jobs:
         with:
           dry: true
           prettier_options: --check src
+  build:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup build
+        uses: ./.github/actions/setup-build
+        with:
+          docker-user: ${{ secrets.DOCKER_USER }}
+          docker-password: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Build php and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          file: Dockerfile
+          tags: dzhuryn/timetable-frontend:dev
+          build-args: API_URL=${API_URL}
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: ssh key passphrase
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.SERVER_HOST }}
+          username: ${{ secrets.SERVER_USERNAME }}
+          key: ${{ secrets.SERVER_KEY }}
+          debug: true
+          script: |
+            cd ${{ env.PROJECT_FOLDER }}
+            docker-compose pull
+            docker-compose up -d
